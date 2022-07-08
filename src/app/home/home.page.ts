@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
+import { ActionSheetController, IonModal, ToastController } from '@ionic/angular';
 import { DragulaService } from 'ng2-dragula';
+import { OverlayEventDetail } from '@ionic/core/components'
+import { elemento, elementoParaAdicionar } from '../interfaces/elemento-interface';
 
 @Component({
   selector: 'app-home',
@@ -9,36 +11,26 @@ import { DragulaService } from 'ng2-dragula';
 })
 export class HomePage {
 
-  q1 = [
-    { value: 'Buy Milk', color: 'primary' },
-    { value: 'Write new Post', color: 'primary' }
-  ];
-  q2 = [
-    { value: 'Schedule newsletter', color: 'secondary' },
-    { value: 'Find new Ionic Academy topics', color: 'secondary' }
-  ];
-  q3 = [
-    { value: 'Improve page performance', color: 'tertiary' },
-    { value: 'Clean the house', color: 'tertiary' }
-  ];
-  q4 = [
-    { value: 'Unimportant things', color: 'warning' },
-    { value: 'Watch Netflix', color: 'warning' }
-  ];
+  Arr = Array;
+  num:number = 12;
 
-  availableItems = [
-    { value: 'Unimportant things', color: 'warning' },
-    { value: 'Watch Netflix', color: 'warning' }
-  ]
+  listaElementos: elemento[] = [];
+
+  listElementosParaAdicionar: elementoParaAdicionar[] = [];
  
-  todo = { value: '', color: '' };
-  selectedQuadrant = 'q1';
+  todo = { value: '',  tipo_elemento: '', opcion: '', estado: ''};
+  selectedQuadrant: string = '';
+  opcionElemento: string = '';
+  resultado: any;
+
+  @ViewChild(IonModal) modal: IonModal;
+
+  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
+  name: string;
  
-  constructor(private dragulaService: DragulaService, private toastController: ToastController) {
-    this.dragulaService.drag('bag')
-    .subscribe(({ name, el, source }) => {
-      el.setAttribute('color', 'danger');
-    });
+  constructor(private dragulaService: DragulaService, 
+              private toastController: ToastController,
+              public actionSheetController: ActionSheetController) {
  
     this.dragulaService.removeModel('bag')
     .subscribe(({ item }) => {
@@ -52,32 +44,93 @@ export class HomePage {
       .subscribe(({ item }) => {
         item['color'] = 'success';
       });
- 
-    this.dragulaService.createGroup('bag', {
-      removeOnSpill: true
+
+      this.dragulaService.createGroup('bag', {
+        removeOnSpill: true
+      });
+
+    this.dragulaService.drop('bag')
+    .subscribe(({ name, el, target, source, sibling }) => {
+      console.log(el.id, target.id, el.classList[0])
+      this.resultado = this.listElementosParaAdicionar.find( elemento => elemento.value == el.id);
+      this.listaElementos.push({id: el.id, id_posicion: target.id, tipo_elemento: this.resultado.tipo_elemento, opcion: el.classList[0], estado: this.resultado.estado})
+      this.resultado = "";
     });
   }
  
   addTodo() {
-    switch (this.selectedQuadrant) {
-      case 'q1':
-        this.todo.color = 'primary';
-        break;
-      case 'q2':
-        this.todo.color = 'secondary';
-        break;
-      case 'q3':
-        this.todo.color = 'tertiary';
-        break;
-      case 'q4':
-        this.todo.color = 'warning';
-        break;
-      case 'availableItems':
-        this.todo.color = 'warning';
-        break;
+
+    this.todo.tipo_elemento = this.selectedQuadrant;
+    this.todo.opcion = this.opcionElemento;
+    if(this.todo.tipo_elemento=="mesa") {
+      this.todo.estado = "vacia";
     }
-    this[this.selectedQuadrant].push(this.todo);
-    this.todo = { value: '', color: '' };
+    this.listElementosParaAdicionar.push(this.todo);
+    this.todo = { tipo_elemento: '', value: '', opcion: '', estado: ''};
+    this.modal.dismiss(this.name, 'confirm');
+    
+  }
+
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    this.modal.dismiss(this.name, 'confirm');
+  }
+
+  onWillDismiss(event: Event) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
+      this.message = `Hello, ${ev.detail.data}!`;
+    }
+  }
+
+  updateSearch(posicion) {
+    let resultado = this.listaElementos.find( elemento => elemento.id == posicion);
+    if(resultado.tipo_elemento=="mesa"){
+      this.presentActionSheet(resultado);
+    }
+    console.log("prueba " + posicion);
+    
+  }
+
+  async presentActionSheet(elemento) {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Estado actual: ' + elemento.estado,
+      cssClass: 'my-custom-class',
+   
+      buttons: [
+          {
+            text: 'Vacia',
+            icon: 'share',
+            data: 10,
+            handler: () => {
+              console.log('Share clicked');
+            }
+          }
+
+        , {
+        text: 'Orden Asignada',
+        icon: 'clipboard',
+        data: 'Data value',
+        handler: () => {
+          console.log('Play clicked');
+        }
+      }, {
+        text: 'Despachada',
+        icon: 'checkbox',
+        handler: () => {
+          console.log('Favorite clicked');
+        }
+      },
+    ]
+    });
+    await actionSheet.present();
+
+    const { role, data } = await actionSheet.onDidDismiss();
+    console.log('onDidDismiss resolved with role and data', role, data);
+    
   }
 
 }

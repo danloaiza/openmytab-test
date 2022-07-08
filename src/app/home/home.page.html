@@ -1,193 +1,107 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>
       Devdactic Eisenhower
     </ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
  
 <ion-content forceOverscroll="false">
   <ion-grid>
- 
-    <ion-row align-items-center>
-      <ion-col size="12">
-        <ion-item>
-          <ion-label position="fixed">New Todo:</ion-label>
-          <ion-input [(ngModel)]="todo.value"></ion-input>
-        </ion-item>
- 
-      </ion-col>
- 
-      <ion-col size="12">
-        <ion-item>
-          <ion-label>Quadrant:</ion-label>
-          <ion-select [(ngModel)]="selectedQuadrant">
-            <ion-select-option value="q1">Do</ion-select-option>
-            <ion-select-option value="q2">Schedule</ion-select-option>
-            <ion-select-option value="q3">Delegate</ion-select-option>
-            <ion-select-option value="q4">Dont do</ion-select-option>
-            <ion-select-option value="availableItems">availableItems</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-col>
- 
-    </ion-row>
- 
-    <ion-button expand="block" fill="outline" (click)="addTodo()">
-      <ion-icon name="add" slot="start"></ion-icon>
-      Add Todo
-    </ion-button>
- 
-    <ion-row no-padding class="matrix">
-      <ion-col size="6" class="q1">
-        <div class="q-header">Do</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q1" lines="none">
-          <ion-item *ngFor="let item of q1" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
- 
-      <ion-col size="6" class="q2">
-        <div class="q-header">Schedule</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q2" lines="none">
-          <ion-item *ngFor="let item of q2" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
 
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
- 
-      <ion-col size="1" class="q4">
-        <div class="q-header">Don't do</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q4" lines="none">
-          <ion-item *ngFor="let item of q4" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
-
-      <ion-col size="1" class="q3">
-        <div class="q-header">Delegate</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q3" lines="none">
-          <ion-item *ngFor="let item of q3" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
-      </ion-col>
- 
-      <ion-col size="1" class="q4">
-        <div class="q-header">Don't do</div>
-        <ion-list dragula="bag" [(dragulaModel)]="q4" lines="none">
-          <ion-item *ngFor="let item of q4" [color]="item.color" expand="block" text-wrap>
-            {{ item.value }}
-          </ion-item>
-        </ion-list>
+    
+    <ion-row width="10px"  *ngFor="let item of Arr(num).fill(1); let x = index">
+      
+      <ion-col class="cell-class" Height="50px" width="50px" [id]="i + '-' + x" size="1" *ngFor="let item of Arr(num).fill(1) ; let i = index" dragula="bag"  >
       </ion-col>
     </ion-row>
   </ion-grid>
  
   <div>
-    <ion-row  class="area" align-items-center justify-content-center>
-      <div class="delete" size="2">
+    <ion-row class="delete-area" align-items-center justify-content-center>
         <ion-icon name="trash" color="danger"></ion-icon>
-      </div >
-      <div size="10" class="area-items">
+
+    </ion-row>
+    <ion-row  class="area" align-items-center justify-content-center>
 
         <ion-grid fixed>
           <ion-row>
-            <ion-col *ngFor="let item of availableItems">
-                <ion-list dragula="bag" [(dragulaModel)]="availableItems" lines="none">
-                  <ion-item [color]="item.color" expand="block" text-wrap>
-      
+            <ion-col *ngFor="let item of listElementosParaAdicionar; let i = index">
+                <ion-list dragula="bag" lines="none">
+
+                  <ion-item color="medium" *ngIf="item.tipo_elemento=='mesa'" [ngClass]="item.opcion" [id]="item.value" (click)="updateSearch(item.value)">
+                    {{item.value}}
+                  </ion-item>
+                  
+                  <ion-item color="medium" *ngIf="item.tipo_elemento=='pared'" [ngClass]="item.opcion" [id]="'pared-'+i" (click)="updateSearch(i)">
                   </ion-item>
                 </ion-list>
               </ion-col>
           </ion-row>
         </ion-grid>
-<!--           <ion-list dragula="bag" [(dragulaModel)]="availableItems" lines="none">
-            <ion-item *ngFor="let item of availableItems" [color]="item.color" expand="block" text-wrap>
-              {{ item.value }}
-            </ion-item>
-          </ion-list> -->
-      </div>
     </ion-row>
 
   </div>
+
+  <ion-fab id="open-modal" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Escoger elemento</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+
+        <ion-item>
+          <ion-label>Escoger Mesa o Pared:</ion-label>
+          <ion-select [(ngModel)]="selectedQuadrant">
+            <ion-select-option value="mesa">Mesa</ion-select-option>
+            <ion-select-option value="pared">Pared</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div *ngIf="selectedQuadrant=='mesa'">
+          <ion-item >
+            <ion-label >Número de mesa</ion-label>
+            <ion-input type="number" [(ngModel)]="todo.value"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Tipo de la mesa</ion-label>
+            <ion-select [(ngModel)]="opcionElemento">
+              <ion-select-option value="mesa1">Una persona</ion-select-option>
+              <ion-select-option value="mesa2">Dos personas</ion-select-option>
+              <ion-select-option value="mesa3">Cuatro personas</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div *ngIf="selectedQuadrant=='pared'">
+          <ion-item>
+            <ion-label>Escoja pared</ion-label>
+            <ion-select [(ngModel)]="opcionElemento">
+              <ion-select-option value="pared_horizontal">Horizontal</ion-select-option>
+              <ion-select-option value="pared_vertical">Vertical</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <ion-button expand="block" fill="outline" (click)="addTodo()">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Todo
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
  
 </ion-content>

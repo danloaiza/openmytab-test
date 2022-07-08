@@ -1,29 +1,23 @@
 import { Component, ViewChild } from '@angular/core';
-import { ActionSheetController, IonModal, ModalController, ToastController } from '@ionic/angular';
-import { DragulaService } from 'ng2-dragula';
+import { ActionSheetController, IonModal, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components'
-import { elemento, elementoParaAdicionar } from '../interfaces/elemento-interface';
+import { elemento } from '../interfaces/elemento-interface';
+import { LocalStorageService } from '../services/local-storage.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage{
 
   segment;
-
+  data = '';
   cuartos = [];
   cuarto = '';
-
-  Arr = Array;
-  num:number = 12;
-
   listaElementos: elemento[] = [];
-
-  listElementosParaAdicionar: elementoParaAdicionar[] = [];
  
-  todo = { value: '',  tipo_elemento: '', opcion: '', estado: ''};
+  todo = { id: 0, nombre: '', posicion : {}, tipo_elemento: '', opcion: '', estado: '', segment: ''};
   selectedQuadrant: string = '';
   opcionElemento: string = '';
   resultado: any;
@@ -33,51 +27,38 @@ export class HomePage {
 
   message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
   name: string;
- 
-  constructor(private dragulaService: DragulaService, 
-              private toastController: ToastController,
-              public actionSheetController: ActionSheetController) {
- 
-    this.dragulaService.removeModel('bag')
-    .subscribe(({ item }) => {
-      this.toastController.create({
-        message: 'Removed: ' + item.value,
-        duration: 2000
-      }).then(toast => toast.present());
-    });
- 
-/*     this.dragulaService.dropModel('bag')
-      .subscribe(({ item }) => {
-        item['color'] = 'success';
-      }); */
 
-      this.dragulaService.createGroup('bag', {
-        removeOnSpill: true
-      });
+  constructor(
+              public actionSheetController: ActionSheetController,
+              private localStorageService: LocalStorageService)
+    {
 
-    this.dragulaService.drop('bag')
-    .subscribe(({ name, el, target, source, sibling }) => {
-      console.log(el.id, target.id, el.classList[0])
-      this.resultado = this.listElementosParaAdicionar.find( elemento => elemento.value == el.id);
-      this.listaElementos.push({id: el.id, id_posicion: target.id, tipo_elemento: this.resultado.tipo_elemento, opcion: el.classList[0], estado: this.resultado.estado})
-      document.getElementById(el.id).style.border = '4px solid green';
-      this.resultado = "";
-    });
+    if(this.localStorageService.get('cuartos') !== null) {
+      this.cuartos = this.localStorageService.get('cuartos');
+    }
+    if( this.localStorageService.get('lista_elementos') !== null ) {
+      this.listaElementos = this.localStorageService.get('lista_elementos');
+    }
+
   }
  
   addTodo() {
-
     if(this.cuarto == '') {
+      this.todo.id = this.listaElementos.length;
       this.todo.tipo_elemento = this.selectedQuadrant;
       this.todo.opcion = this.opcionElemento;
+      this.todo.posicion = {x: 0, y: 0}
+      this.todo.segment = this.segment;
       if(this.todo.tipo_elemento=="mesa") {
         this.todo.estado = "vacia";
       }
-      this.listElementosParaAdicionar.push(this.todo);
-      this.todo = { tipo_elemento: '', value: '', opcion: '', estado: ''};
+      this.listaElementos.push(this.todo);
+      this.localStorageService.set('lista_elementos', this.listaElementos)
+      this.todo = { id: 0,nombre: '',  posicion: {}, tipo_elemento: '', opcion: '', estado: '', segment: ''};
       this.modal.dismiss(this.name, 'confirm');
     } else {
       this.cuartos.push(this.cuarto);
+      this.enviarCuartoALocalStorage();
       this.openModal.dismiss();
     }
     
@@ -95,13 +76,6 @@ export class HomePage {
     this.openModal.dismiss();
   }
 
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.message = `Hello, ${ev.detail.data}!`;
-    }
-  }
-
   addCuarto(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'open-modal-add-cuartos') {
@@ -112,63 +86,149 @@ export class HomePage {
   eliminarCuarto(){
     let indice = this.cuartos.indexOf(this.segment);
     this.cuartos.splice(indice, 1);
-    console.log(indice, this.segment)
+    this.enviarCuartoALocalStorage();
   }
 
-  updateSearch(posicion) {
-    let resultado = this.listaElementos.find( elemento => elemento.id == posicion);
-    if(resultado.tipo_elemento=="mesa"){
-      this.presentActionSheet(resultado);
-    }
-    console.log("prueba " + posicion);
-    
+  enviarCuartoALocalStorage() {
+    this.localStorageService.set('cuartos', this.cuartos);
+  }
+
+  enviarElementosALocalStorage() {
+    this.localStorageService.set('lista_elementos', this.listaElementos);
   }
 
   async presentActionSheet(elemento) {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Estado actual: ' + elemento.estado,
-      cssClass: 'my-custom-class',
-   
-      buttons: [
-          {
-            text: 'Vacia',
-            icon: 'share',
-            data: 10,
-            handler: () => {
-              console.log('Share clicked');
-              document.getElementById(elemento.id).style.border = '4px solid green';
+    if(elemento.tipo_elemento=="mesa"){
+      const actionSheet = await this.actionSheetController.create({
+        header: 'Estado actual: ' + elemento.estado,
+        cssClass: 'my-custom-class',
+        buttons: [
+            {
+              text: 'Vacia',
+              icon: 'share',
+              data: 10,
+              handler: () => {
+                document.getElementById(elemento.id).style.border = '4px solid green';
+                this.cambiarEstadoMesa('vacia', elemento);
+              }
+            }
+          , {
+          text: 'Orden Asignada',
+          icon: 'clipboard',
+          data: 'Data value',
+          handler: () => {
+            document.getElementById(elemento.id).style.border = '4px solid red';
+            this.cambiarEstadoMesa('asignada', elemento);
+          }
+        }, {
+          text: 'Despachada',
+          icon: 'checkbox',
+          handler: () => {
+            document.getElementById(elemento.id).style.border = '4px solid yellow';
+            this.cambiarEstadoMesa('despachada', elemento);
+          }
+        },
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          icon: 'trash',
+          id: 'delete-button',
+          data: {
+            type: 'delete'
+          },
+          handler: () => {
+            let incremento = 0;
+            let indice: any;
+            indice = this.listaElementos.map(function(item){
+              if(item.id == elemento.id){
+                
+                return incremento;
+              }
+              incremento ++;
+            });
+            if(indice[0] !== ''){
+              this.listaElementos.splice(indice[0], 1);
+              this.enviarElementosALocalStorage();
             }
           }
-
-        , {
-        text: 'Orden Asignada',
-        icon: 'clipboard',
-        data: 'Data value',
-        handler: () => {
-          console.log('Play clicked');
-          document.getElementById(elemento.id).style.border = '4px solid red';
         }
-      }, {
-        text: 'Despachada',
-        icon: 'checkbox',
-        handler: () => {
-          console.log('Favorite clicked');
-          document.getElementById(elemento.id).style.border = '4px solid yellow';
-        }
-      },
-    ]
-    });
-    await actionSheet.present();
-
-    const { role, data } = await actionSheet.onDidDismiss();
-    console.log('onDidDismiss resolved with role and data', role, data);
-    
+      ]
+      });
+      await actionSheet.present();
+    } else if(elemento.tipo_elemento=="pared") {
+      const actionSheet = await this.actionSheetController.create({
+        header: 'Eliminar pared',
+        cssClass: 'my-custom-class',
+     
+        buttons: [
+          {
+            text: 'Eliminar',
+            role: 'destructive',
+            icon: 'trash',
+            id: 'delete-button',
+            data: {
+              type: 'delete'
+            },
+            handler: () => {
+              let incremento = 0;
+              let indice: any;
+              indice = this.listaElementos.map(function(item){
+                if(item.id == elemento.id){
+                  
+                  return incremento;
+                }
+                incremento ++;
+              });
+              if(indice[0] !== ''){
+                this.listaElementos.splice(indice[0], 1);
+                this.enviarElementosALocalStorage();
+              }
+            }
+          }
+      ]
+      });
+      await actionSheet.present();
+    }
   }
-  
-
 
   cambioDeCuarto(e) {
     console.log(e.detail.value);
+  }
+
+  onDragEnded(event, item) {
+    let element = event.source.getRootElement();
+    let boundingClientRect = element.getBoundingClientRect();
+    let parentPosition = this.getPosition
+    
+    (element);
+    console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));
+    this.listaElementos.map(function(elemento){
+      if(elemento.id == item.id){
+        elemento.posicion = {x: boundingClientRect.x - parentPosition.left, y: boundingClientRect.y - parentPosition.top};
+      }
+    });
+    this.enviarElementosALocalStorage();
+    
+  }
+  
+  getPosition(el) {
+    let x = 0;
+    let y = 0;
+    while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      x += el.offsetLeft - el.scrollLeft;
+      y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: y, left: x };
+  }
+
+  cambiarEstadoMesa(estado, item) {
+    this.listaElementos.map(function(elemento){
+      if(elemento.id == item.id){
+        elemento.estado = estado;
+      }
+    });
+    this.enviarElementosALocalStorage();
   }
 
 }

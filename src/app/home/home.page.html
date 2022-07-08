@@ -1,13 +1,5 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Devdactic Eisenhower
-    </ion-title>
-  </ion-toolbar>
-</ion-header> -->
- 
-<ion-content forceOverscroll="false">
 
+<ion-content class="container">
   <ion-grid fixed>
     <ion-row>
       <ion-col size="10">
@@ -34,73 +26,41 @@
     <div *ngFor="let cuarto of cuartos">
       <div *ngSwitchCase="cuarto" >
 
-<!--         <div class="example-box" cdkDrag>
-          I can only be dragged using the handle
-        
-          <div class="example-handle" cdkDragHandle>
-            <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-              <path d="M0 0h24v24H0z" fill="none"></path>
-            </svg>
+        <div   width=100%;  style="height:'400px'; background-color: #ebeceb ; overflow: scroll; height: xyz;" class="container" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+          <div  *ngFor="let item of listaElementos">
+
+            <div *ngIf="item.segment==cuarto" 
+              [id]="item.id"
+              [class]="item.opcion" 
+              cdkDrag
+              cdkDragBoundary=".container"
+              (cdkDragEnded)="onDragEnded($event, item)"
+              [cdkDragFreeDragPosition]="item.posicion"
+              (click)="presentActionSheet(item)">
+              <label>{{item.nombre}}</label>
+            </div>
           </div>
-        </div> -->
-
-         <ion-grid>
-          <ion-row width="10px"  *ngFor="let item of Arr(num).fill(1); let x = index">
-            <ion-col class="cell-class" Height="50px" width="50px" [id]="i + '-' + x" size="1" *ngFor="let item of Arr(num).fill(1) ; let i = index" dragula="bag"  >
-            </ion-col>
-          </ion-row>
-        </ion-grid> 
-       
-         <div>
-          <ion-row >
-            <ion-col class="delete-area" size="2">
-              <ion-icon name="trash" color="danger"></ion-icon>
-            </ion-col>
-            <ion-col class="area" size="10">
-
-                <ion-row>
-                  <ion-col *ngFor="let item of listElementosParaAdicionar; let i = index">
-                      <ion-list dragula="bag" lines="none">
-      
-                        <ion-item  *ngIf="item.tipo_elemento=='mesa'" [ngClass]="item.opcion" [id]="item.value" (click)="updateSearch(item.value)">
-                          {{item.value}}
-                        </ion-item>
-                        
-                        <ion-item  *ngIf="item.tipo_elemento=='pared'" [ngClass]="item.opcion" [id]="'pared-'+i" (click)="updateSearch(i)">
-                        </ion-item>
-                      </ion-list>
-                    </ion-col>
-                </ion-row>
-            </ion-col>
-      
-          </ion-row> 
-      
-         </div> 
-      
-  
+        </div>
       </div>
-  
     </div>
   </div>
 
-  <ion-fab id="open-modal" vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <div [ngSwitch]="segment">
+    <ion-fab  id="open-modal" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button>
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
 
-  <ion-modal trigger="open-modal"  (willDismiss)="onWillDismiss($event)">
+  <ion-modal trigger="open-modal">
     <ng-template>
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="cancel()">Cancel</ion-button>
+            <ion-button (click)="cancel()">Cancelar</ion-button>
           </ion-buttons>
           <ion-title>Adicionar elemento</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-          </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
@@ -110,26 +70,18 @@
           <ion-select [(ngModel)]="selectedQuadrant">
             <ion-select-option value="mesa">Mesa</ion-select-option>
             <ion-select-option value="pared">Pared</ion-select-option>
-            <ion-select-option value="cuarto">Cuarto</ion-select-option>
           </ion-select>
         </ion-item>
-        <div *ngIf="selectedQuadrant=='cuarto'">
-          <ion-item >
-            <ion-label >Nombre del cuarto</ion-label>
-            <ion-input [(ngModel)]="cuarto"></ion-input>
-          </ion-item>
-        </div>
         <div *ngIf="selectedQuadrant=='mesa'">
           <ion-item >
-            <ion-label >Número de mesa</ion-label>
-            <ion-input type="number" [(ngModel)]="todo.value"></ion-input>
+            <ion-label >Nombre de la mesa:</ion-label>
+            <ion-input [(ngModel)]="todo.nombre"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label>Tipo de la mesa</ion-label>
+            <ion-label>Tipo de la mesa:</ion-label>
             <ion-select [(ngModel)]="opcionElemento">
-              <ion-select-option value="mesa1">Una persona</ion-select-option>
-              <ion-select-option value="mesa2">Dos personas</ion-select-option>
-              <ion-select-option value="mesa3">Cuatro personas</ion-select-option>
+              <ion-select-option value="mesa1">Mesa pequeña</ion-select-option>
+              <ion-select-option value="mesa2">Mesa grande</ion-select-option>
             </ion-select>
           </ion-item>
         </div>
@@ -146,7 +98,7 @@
 
         <ion-button expand="block" fill="outline" (click)="addTodo()">
           <ion-icon name="add" slot="start"></ion-icon>
-          Add Todo
+          Adicionar
         </ion-button>
       </ion-content>
     </ng-template>
@@ -157,23 +109,20 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="cancel()">Cancel</ion-button>
+            <ion-button (click)="cancel()">Cancelar</ion-button>
           </ion-buttons>
           <ion-title>Adicionar Cuarto</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-          </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
           <ion-item >
-            <ion-label >Nombre del cuarto</ion-label>
+            <ion-label >Nombre del cuarto:</ion-label>
             <ion-input [(ngModel)]="cuarto"></ion-input>
           </ion-item>
 
         <ion-button expand="block" fill="outline" (click)="addTodo()">
           <ion-icon name="add" slot="start"></ion-icon>
-          Add Todo
+          Adicionar
         </ion-button>
       </ion-content>
     </ng-template>

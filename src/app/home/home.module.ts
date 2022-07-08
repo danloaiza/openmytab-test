@@ -6,6 +6,7 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import { DragulaModule } from 'ng2-dragula';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { DragulaModule } from 'ng2-dragula';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    DragulaModule
+    DragulaModule,
+    DragDropModule,
   ],
   declarations: [HomePage]
 })

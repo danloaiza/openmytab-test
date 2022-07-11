@@ -9,7 +9,7 @@ import { LocalStorageService } from '../services/local-storage.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit{
+export class HomePage{
 
   segment;
   data = '';
@@ -44,23 +44,6 @@ export class HomePage implements OnInit{
 
   }
 
-  ngOnInit(): void {
-   /*  document.getElementById('1').style.border = '4px solid orange'; */
-/*      for(let i=0; i <= this.listaElementos.length; i++){
-      if(this.listaElementos[i].estado !== '' && this.listaElementos[i].estado == 'vacia') {
-        document.getElementById(this.listaElementos[i].id.toString()).style.border = '4px solid green';
-      } */
-      /*else if(this.listaElementos[i].estado !== '' && this.listaElementos[i].estado == 'asignada'){
-        document.getElementById(this.listaElementos[i].id.toString()).style.border = '4px solid red';
-      }
-      else if(this.listaElementos[i].estado !== '' && this.listaElementos[i].estado == 'despachada'){
-        document.getElementById(this.listaElementos[i].id.toString()).style.border = '4px solid yellow';
-      }
-      */
-      
-   /*  }  */
-  }
- 
   addTodo() {
     if(this.cuarto == '') {
       this.todo.id = this.listaElementos.length;
@@ -191,14 +174,8 @@ export class HomePage implements OnInit{
             handler: () => {
               let incremento = 0;
               let indice: any;
-              indice = this.listaElementos.map(function(item){
-                if(item.id == elemento.id){
-                  
-                  return incremento;
-                }
-                incremento ++;
-              });
-              if(indice[0] !== ''){
+               indice = this.buscarItem(elemento); 
+              if(indice !== undefined){
                 this.listaElementos.splice(indice[0], 1);
                 this.enviarElementosALocalStorage();
               }
@@ -208,6 +185,20 @@ export class HomePage implements OnInit{
       });
       await actionSheet.present();
     }
+  }
+
+  buscarItem(elemento){
+    let incremento:number = 0;
+    let indiceElementoEncontrado:number = 0; 
+    this.listaElementos.map(function(item){
+      if(item.id == elemento.id){
+        
+        indiceElementoEncontrado = incremento;
+      }
+      incremento ++;
+    });
+
+    return indiceElementoEncontrado;
   }
 
   cambioDeCuarto(e) {

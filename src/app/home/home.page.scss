@@ -84,13 +84,18 @@
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   }
 
+  .pared_horizontal:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+
   .pared_vertical {
-    border-left: 6px solid #000;
+    background-color: #000 !important;
+    border: 6px solid #000;
     height: 100px;
     position: absolute;
-    left: 50%;
-    margin-left: -3px;
-    top: 0;
+    width: 10px;
     color: rgba(0, 0, 0, 0.87);
     cursor: move;
     display: flex;
@@ -103,4 +108,10 @@
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
                 0 2px 2px 0 rgba(0, 0, 0, 0.14),
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .pared_vertical:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
   }

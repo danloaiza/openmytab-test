@@ -139,19 +139,9 @@ export class HomePage{
             type: 'delete'
           },
           handler: () => {
-            let incremento = 0;
-            let indice: any;
-            indice = this.listaElementos.map(function(item){
-              if(item.id == elemento.id){
-                
-                return incremento;
-              }
-              incremento ++;
-            });
-            if(indice[0] !== ''){
-              this.listaElementos.splice(indice[0], 1);
-              this.enviarElementosALocalStorage();
-            }
+            let nuevoArreglo = this.listaElementos.filter((item) => item.id !== elemento.id);
+          this.listaElementos = nuevoArreglo;
+            this.enviarElementosALocalStorage();
           }
         }
       ]
@@ -172,13 +162,9 @@ export class HomePage{
               type: 'delete'
             },
             handler: () => {
-              let incremento = 0;
-              let indice: any;
-               indice = this.buscarItem(elemento); 
-              if(indice !== undefined){
-                this.listaElementos.splice(indice[0], 1);
-                this.enviarElementosALocalStorage();
-              }
+              let nuevoArreglo = this.listaElementos.filter((item) => item.id !== elemento.id);
+              this.listaElementos = nuevoArreglo;
+              this.enviarElementosALocalStorage();
             }
           }
       ]

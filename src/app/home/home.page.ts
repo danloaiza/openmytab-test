@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, IonModal, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components'
 import { elemento } from '../interfaces/elemento-interface';
@@ -9,7 +9,7 @@ import { LocalStorageService } from '../services/local-storage.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage{
+export class HomePage implements OnInit{
 
   segment;
   data = '';
@@ -38,8 +38,27 @@ export class HomePage{
     }
     if( this.localStorageService.get('lista_elementos') !== null ) {
       this.listaElementos = this.localStorageService.get('lista_elementos');
+
+      
     }
 
+  }
+
+  ngOnInit(): void {
+   /*  document.getElementById('1').style.border = '4px solid orange'; */
+/*      for(let i=0; i <= this.listaElementos.length; i++){
+      if(this.listaElementos[i].estado !== '' && this.listaElementos[i].estado == 'vacia') {
+        document.getElementById(this.listaElementos[i].id.toString()).style.border = '4px solid green';
+      } */
+      /*else if(this.listaElementos[i].estado !== '' && this.listaElementos[i].estado == 'asignada'){
+        document.getElementById(this.listaElementos[i].id.toString()).style.border = '4px solid red';
+      }
+      else if(this.listaElementos[i].estado !== '' && this.listaElementos[i].estado == 'despachada'){
+        document.getElementById(this.listaElementos[i].id.toString()).style.border = '4px solid yellow';
+      }
+      */
+      
+   /*  }  */
   }
  
   addTodo() {

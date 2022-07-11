@@ -31,12 +31,13 @@
 
             <div *ngIf="item.segment==cuarto" 
               [id]="item.id"
-              [class]="item.opcion" 
+              [ngClass]="[item.opcion, item.estado]"
               cdkDrag
               cdkDragBoundary=".container"
               (cdkDragEnded)="onDragEnded($event, item)"
               [cdkDragFreeDragPosition]="item.posicion"
-              (click)="presentActionSheet(item)">
+              (click)="presentActionSheet(item)"
+              >
               <label>{{item.nombre}}</label>
             </div>
           </div>
